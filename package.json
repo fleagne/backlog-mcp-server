@@ -1,0 +1,40 @@
+{
+  "name": "backlog-mcp-server",
+  "version": "0.1.0",
+  "description": "MCP Server for Backlog API integration",
+  "license": "MIT",
+  "author": "Toshinori Suzuki <toshinori.s9252@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fleagne/backlog-mcp-server.git"
+  },
+  "bugs": "https://github.com/fleagne/backlog-mcp-server/issues",
+  "keywords": [
+    "backlog",
+    "mcp"
+  ],
+  "type": "module",
+  "bin": {
+    "mcp-server-backlog": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npm run build && npx @modelcontextprotocol/inspector build/index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.6.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.13.9",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.8.2"
+  }
+}
