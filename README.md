@@ -34,7 +34,7 @@ Add this to your `claude_desktop_config.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@fleagne/backlog-mcp-server"
+        "backlog-mcp-server"
       ],
       "env": {
         "BACKLOG_API_KEY": "YOUR_API_KEY_HERE",
