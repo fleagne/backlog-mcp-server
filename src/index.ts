@@ -48,10 +48,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 		if (!toolRegistry.hasTool(name)) {
 			return {
-				result: {
-					content: [{ type: "text", text: `Unknown tool: ${name}` }],
-					isError: true,
-				},
+				content: [{ type: "text", text: `Unknown tool: ${name}` }],
+				isError: true,
 			};
 		}
 
@@ -59,28 +57,22 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
 		if (handler) {
 			const toolResponse = await handler(args);
-			return { result: toolResponse.content };
+			return { content: toolResponse.content, isError: toolResponse.isError };
 		}
 
 		return {
-			result: {
-				content: [
-					{ type: "text", text: `No handler defined for tool: ${name}` },
-				],
-				isError: true,
-			},
+			content: [{ type: "text", text: `No handler defined for tool: ${name}` }],
+			isError: true,
 		};
 	} catch (error) {
 		return {
-			result: {
-				content: [
-					{
-						type: "text",
-						text: `Server error: ${formatError(error)}`,
-					},
-				],
-				isError: true,
-			},
+			content: [
+				{
+					type: "text",
+					text: `Server error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
 		};
 	}
 });
