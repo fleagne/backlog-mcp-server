@@ -1,13 +1,15 @@
 import {
 	AddIssueParamsSchema,
+	DeleteIssueParamsSchema,
 	IssueParamsSchema,
 	IssuesParamsSchema,
 	ProjectParamsSchema,
 	ProjectsParamsSchema,
+	UpdateIssueParamsSchema,
 } from "../core/schema.js";
 import type { ToolName } from "../core/types.js";
 import { ValidationError, formatError } from "../error/errors.js";
-import { backlogService } from "../services/index.js";
+import { issueService, projectService } from "../services/index.js";
 
 interface ToolResponse {
 	content: {
@@ -25,7 +27,7 @@ const handleGetProjects: ToolHandler = async (args) => {
 		try {
 			const validatedParams = ProjectsParamsSchema.parse(args);
 
-			const text = await backlogService.getProjects(validatedParams);
+			const text = await projectService.getProjects(validatedParams);
 
 			return {
 				content: [
@@ -59,7 +61,7 @@ const handleGetProject: ToolHandler = async (args) => {
 		try {
 			const validatedParams = ProjectParamsSchema.parse(args);
 
-			const text = await backlogService.getProject(validatedParams);
+			const text = await projectService.getProject(validatedParams);
 
 			return {
 				content: [
@@ -93,7 +95,7 @@ const handleGetIssues: ToolHandler = async (args) => {
 		try {
 			const validatedParams = IssuesParamsSchema.parse(args);
 
-			const text = await backlogService.getIssues(validatedParams);
+			const text = await issueService.getIssues(validatedParams);
 
 			return {
 				content: [
@@ -127,7 +129,7 @@ const handleGetIssue: ToolHandler = async (args) => {
 		try {
 			const validatedParams = IssueParamsSchema.parse(args);
 
-			const text = await backlogService.getIssue(validatedParams);
+			const text = await issueService.getIssue(validatedParams);
 
 			return {
 				content: [
@@ -161,7 +163,75 @@ const handleAddIssue: ToolHandler = async (args) => {
 		try {
 			const validatedParams = AddIssueParamsSchema.parse(args);
 
-			const text = await backlogService.addIssue(validatedParams);
+			const text = await issueService.addIssue(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleUpdateIssue: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = UpdateIssueParamsSchema.parse(args);
+
+			const text = await issueService.updateIssue(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleDeleteIssue: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = DeleteIssueParamsSchema.parse(args);
+
+			const text = await issueService.deleteIssue(validatedParams);
 
 			return {
 				content: [
@@ -196,4 +266,6 @@ export const toolHandlers: Record<ToolName, ToolHandler> = {
 	backlog_get_issues: handleGetIssues,
 	backlog_get_issue: handleGetIssue,
 	backlog_add_issue: handleAddIssue,
+	backlog_update_issue: handleUpdateIssue,
+	backlog_delete_issue: handleDeleteIssue,
 };

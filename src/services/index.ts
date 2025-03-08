@@ -1,3 +1,2 @@
-export * from "./backlogService.js";
-// export * from "./projectService.js";
-// export * from "./userService.js";
+export * from "./issueService.js";
+export * from "./projectService.js";

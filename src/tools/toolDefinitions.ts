@@ -2,10 +2,12 @@ import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import {
 	AddIssueParamsSchema,
+	DeleteIssueParamsSchema,
 	IssueParamsSchema,
 	IssuesParamsSchema,
 	ProjectParamsSchema,
 	ProjectsParamsSchema,
+	UpdateIssueParamsSchema,
 } from "../core/schema.js";
 
 function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
@@ -14,6 +16,8 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 	const isIssuesParamsSchema = schema === IssuesParamsSchema;
 	const isIssueParamsSchema = schema === IssueParamsSchema;
 	const isAddIssueParamsSchema = schema === AddIssueParamsSchema;
+	const isUpdateIssueParamsSchema = schema === AddIssueParamsSchema;
+	const isDeleteIssueParamsSchema = schema === AddIssueParamsSchema;
 
 	if (isProjectsParamsSchema) {
 		return {
@@ -148,7 +152,7 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 			properties: {
 				issueIdOrKey: {
 					type: "string",
-					description: "Issue id or key",
+					description: "Issue ID or Issue Key",
 				},
 			},
 			required: ["issueIdOrKey"],
@@ -213,6 +217,80 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 				},
 			},
 			required: ["projectId", "summary", "issueTypeId", "priorityId"],
+		};
+	}
+
+	if (isUpdateIssueParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				issueIdOrKey: {
+					type: "string",
+					description: "Issue ID or Issue Key",
+				},
+				summary: {
+					type: "string",
+					description: "Summary of the issue",
+				},
+				description: {
+					type: "string",
+					description: "Description of the issue",
+				},
+				issueTypeId: {
+					type: "number",
+					description: "Issue type id",
+				},
+				priorityId: {
+					type: "number",
+					description: "Priority id",
+				},
+				categoryId: {
+					type: "number",
+					description: "Category id",
+				},
+				versionId: {
+					type: "number",
+					description: "Version id",
+				},
+				milestoneId: {
+					type: "number",
+					description: "Milestone id",
+				},
+				assigneeId: {
+					type: "number",
+					description: "Assignee id",
+				},
+				startDate: {
+					type: "string",
+					description: "Start date of the issue (YYYY-MM-DD format)",
+				},
+				dueDate: {
+					type: "string",
+					description: "Due date of the issue (YYYY-MM-DD format)",
+				},
+				estimatedHours: {
+					type: "number",
+					description: "Estimated hours for the issue",
+				},
+				actualHours: {
+					type: "number",
+					description: "Actual hours for the issue",
+				},
+			},
+			required: ["issueIdOrKey"],
+		};
+	}
+
+	if (isDeleteIssueParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				issueIdOrKey: {
+					type: "string",
+					description: "Issue ID or Issue Key",
+				},
+			},
+			required: ["issueIdOrKey", "content"],
 		};
 	}
 
@@ -353,7 +431,7 @@ export const PROJECT_TOOL: Tool = createTool(
 
 export const ISSUES_TOOL: Tool = createTool(
 	"backlog_get_issues",
-	"Performs list issue get using the Backlog Issues get API. " +
+	"Performs list issue get using the Backlog Issues API. " +
 		"Supports pagination, content filtering. " +
 		"Maximum 20 results per request, with offset for pagination.",
 	IssuesParamsSchema,
@@ -361,14 +439,26 @@ export const ISSUES_TOOL: Tool = createTool(
 
 export const ISSUE_TOOL: Tool = createTool(
 	"backlog_get_issue",
-	"Performs an issue get using the Backlog Issue get API.",
+	"Performs an issue get using the Backlog Issue API.",
 	IssueParamsSchema,
 );
 
 export const ADD_ISSUE_TOOL: Tool = createTool(
 	"backlog_add_issue",
-	"Adds an issue using the Backlog Add Issue API.",
+	"Add an issue using the Backlog Issue API.",
 	AddIssueParamsSchema,
+);
+
+export const UPDATE_ISSUE_TOOL: Tool = createTool(
+	"backlog_update_issue",
+	"Update an issue using the Backlog Issue API.",
+	UpdateIssueParamsSchema,
+);
+
+export const DELETE_ISSUE_TOOL: Tool = createTool(
+	"backlog_delete_issue",
+	"Delete an issue using the Backlog Issue API.",
+	DeleteIssueParamsSchema,
 );
 
 export const ALL_TOOLS: Tool[] = [
@@ -377,4 +467,6 @@ export const ALL_TOOLS: Tool[] = [
 	ISSUES_TOOL,
 	ISSUE_TOOL,
 	ADD_ISSUE_TOOL,
+	UPDATE_ISSUE_TOOL,
+	DELETE_ISSUE_TOOL,
 ];

@@ -1,10 +1,12 @@
 import { BACKLOG_API_KEY, BACKLOG_BASE_URL } from "../config/config.js";
 import type {
 	AddIssueParams,
+	DeleteIssueParams,
 	IssueParams,
 	IssuesParams,
 	ProjectParams,
 	ProjectsParams,
+	UpdateIssueParams,
 } from "../core/schema.js";
 import type { BacklogIssue, BacklogProject } from "../core/types.js";
 import { APIError } from "../error/errors.js";
@@ -42,7 +44,6 @@ class BacklogAPI {
 
 		let bodyData: URLSearchParams | string | undefined;
 		if (method === "POST" || method === "PATCH") {
-			// フォームデータとして送信する場合
 			if (headers["Content-Type"] === "application/x-www-form-urlencoded") {
 				const formData = new URLSearchParams();
 				for (const [key, value] of Object.entries(params)) {
@@ -58,7 +59,6 @@ class BacklogAPI {
 				}
 				bodyData = formData;
 			} else {
-				// JSONとして送信する場合
 				bodyData = JSON.stringify(params);
 			}
 		}
@@ -139,6 +139,30 @@ class BacklogAPI {
 		const data = await this.request<BacklogIssue>("/issues", params, "POST", {
 			"Content-Type": "application/x-www-form-urlencoded",
 		});
+		return JSON.stringify(data, null, 2);
+	}
+
+	async updateIssue(params: UpdateIssueParams): Promise<string> {
+		const data = await this.request<BacklogIssue>(
+			`/issues/${params.issueIdOrKey}`,
+			{ ...params, issueIdOrKey: undefined },
+			"PATCH",
+			{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async deleteIssue(params: DeleteIssueParams): Promise<string> {
+		const data = await this.request<BacklogIssue>(
+			`/issues/${params.issueIdOrKey}`,
+			{},
+			"DELETE",
+			{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		);
 		return JSON.stringify(data, null, 2);
 	}
 }

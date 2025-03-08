@@ -130,4 +130,6 @@ export type ToolName =
 	| "backlog_get_project"
 	| "backlog_get_issues"
 	| "backlog_get_issue"
-	| "backlog_add_issue";
+	| "backlog_add_issue"
+	| "backlog_update_issue"
+	| "backlog_delete_issue";

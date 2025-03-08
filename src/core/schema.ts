@@ -131,7 +131,7 @@ export const IssuesParamsSchema = BaseParamsSchema.merge(DateRangeSchema)
 	.merge(KeywordSchema);
 
 export const IssueParamsSchema = z.object({
-	issueIdOrKey: z.string().describe("Issue id or key"),
+	issueIdOrKey: z.string().describe("Issue ID or Issue Key"),
 });
 
 export const AddIssueParamsSchema = z.object({
@@ -153,8 +153,35 @@ export const AddIssueParamsSchema = z.object({
 	attachmentId: z.array(z.number()).optional().describe("Attachment ids"),
 });
 
+export const UpdateIssueParamsSchema = z.object({
+	issueIdOrKey: z.string().describe("Issue ID or Issue Key"),
+	summary: z.string().optional().describe("Summary"),
+	parentIssueId: z.number().int().optional().describe("Parent issue id"),
+	description: z.string().optional().describe("Description"),
+	statusId: z.number().int().optional().describe("Status id"),
+	startDate: z.string().optional().describe("Start date"),
+	dueDate: z.string().optional().describe("Due date"),
+	estimatedHours: z.number().optional().describe("Estimated hours"),
+	actualHours: z.number().optional().describe("Actual hours"),
+	issueTypeId: z.number().int().optional().describe("Issue type id"),
+	categoryId: z.array(z.number()).optional().describe("Category ids"),
+	versionId: z.array(z.number()).optional().describe("Version ids"),
+	milestoneId: z.array(z.number()).optional().describe("Milestone ids"),
+	priorityId: z.number().int().optional().describe("Priority id"),
+	assigneeId: z.number().int().optional().describe("Assignee id"),
+	notifiedUserId: z.array(z.number()).optional().describe("Notified user ids"),
+	attachmentId: z.array(z.number()).optional().describe("Attachment ids"),
+	comment: z.string().optional().describe("Comment"),
+});
+
+export const DeleteIssueParamsSchema = z.object({
+	issueIdOrKey: z.string().describe("Issue ID or Issue Key"),
+});
+
 export type ProjectsParams = z.infer<typeof ProjectsParamsSchema>;
 export type ProjectParams = z.infer<typeof ProjectParamsSchema>;
 export type IssuesParams = z.infer<typeof IssuesParamsSchema>;
 export type IssueParams = z.infer<typeof IssueParamsSchema>;
 export type AddIssueParams = z.infer<typeof AddIssueParamsSchema>;
+export type UpdateIssueParams = z.infer<typeof UpdateIssueParamsSchema>;
+export type DeleteIssueParams = z.infer<typeof DeleteIssueParamsSchema>;

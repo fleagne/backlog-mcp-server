@@ -4,10 +4,15 @@ An MCP server implementation that integrates the Backlog API.
 
 ## Tools
 
+### Project API
+
 - **backlog_get_projects**
   - Execute projects get with pagination and filtering
 - **backlog_get_project**
   - Execute project gets with project id or key
+
+### Issue API
+
 - **backlog_get_issues**
   - Execute issues get with pagination and filtering
 - **backlog_get_issue**
