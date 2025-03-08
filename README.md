@@ -2,16 +2,18 @@
 
 An MCP server implementation that integrates the Backlog API.
 
-## Features
-
-- **Issue Search**: Search for issues using the Backlog API
-
 ## Tools
 
-- **backlog_search_issues**
-  - Execute issues search with pagination and filtering
-- **backlog_search_issue**
-  - Execute issue searches with issue id or key
+- **backlog_get_projects**
+  - Execute projects get with pagination and filtering
+- **backlog_get_project**
+  - Execute project gets with project id or key
+- **backlog_get_issues**
+  - Execute issues get with pagination and filtering
+- **backlog_get_issue**
+  - Execute issue gets with issue id or key
+- **backlog_add_issue**
+  - Execute issue add with issue data
 
 ## Configuration
 
@@ -90,6 +92,12 @@ npm install
 
 ```bash
 npm run build
+```
+
+### Debug
+
+```bash
+npm run debug
 ```
 
 ### Running Tests

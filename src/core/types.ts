@@ -105,4 +105,29 @@ export interface BacklogIssue {
 	stars: BacklogStar[];
 }
 
-export type ToolName = "backlog_search_issues" | "backlog_search_issue";
+export interface BacklogProject {
+	id: number;
+	projectKey: string;
+	name: string;
+	chartEnabled: boolean;
+	useResolvedForChart: boolean;
+	subtaskingEnabled: boolean;
+	projectLeaderCanEditProjectLeader: boolean;
+	useWiki: boolean;
+	useFileSharing: boolean;
+	useWikiTreeView: boolean;
+	useOriginalImageSizeAtWiki: boolean;
+	useSubversion: boolean;
+	useGit: boolean;
+	textFormattingRule: string;
+	archived: boolean;
+	displayOrder: number;
+	useDevAttributes: boolean;
+}
+
+export type ToolName =
+	| "backlog_get_projects"
+	| "backlog_get_project"
+	| "backlog_get_issues"
+	| "backlog_get_issue"
+	| "backlog_add_issue";

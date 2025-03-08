@@ -1,6 +1,12 @@
 import { BACKLOG_API_KEY, BACKLOG_BASE_URL } from "../config/config.js";
-import type { IssueParams, IssuesParams } from "../core/schema.js";
-import type { BacklogIssue } from "../core/types.js";
+import type {
+	AddIssueParams,
+	IssueParams,
+	IssuesParams,
+	ProjectParams,
+	ProjectsParams,
+} from "../core/schema.js";
+import type { BacklogIssue, BacklogProject } from "../core/types.js";
 import { APIError } from "../error/errors.js";
 
 class BacklogAPI {
@@ -14,7 +20,10 @@ class BacklogAPI {
 
 	private async request<T>(
 		path: string,
+		// biome-ignore lint/suspicious/noExplicitAny: Because the interface changes according to the purpose
 		params: Record<string, any> = {},
+		method: "GET" | "POST" | "PATCH" | "DELETE" = "GET",
+		headers: Record<string, string> = {},
 	): Promise<T> {
 		const url = new URL(`${this.baseUrl}${path}`);
 		url.searchParams.set("apiKey", this.apiKey);
@@ -31,11 +40,34 @@ class BacklogAPI {
 			}
 		}
 
+		let bodyData: URLSearchParams | string | undefined;
+		if (method === "POST" || method === "PATCH") {
+			// フォームデータとして送信する場合
+			if (headers["Content-Type"] === "application/x-www-form-urlencoded") {
+				const formData = new URLSearchParams();
+				for (const [key, value] of Object.entries(params)) {
+					if (value === undefined || value === null) continue;
+
+					if (Array.isArray(value)) {
+						for (const item of value) {
+							formData.append(`${key}[]`, String(item));
+						}
+					} else {
+						formData.append(key, String(value));
+					}
+				}
+				bodyData = formData;
+			} else {
+				// JSONとして送信する場合
+				bodyData = JSON.stringify(params);
+			}
+		}
+
 		try {
 			const response = await fetch(url, {
-				headers: {
-					Accept: "application/json",
-				},
+				method: method,
+				headers: headers,
+				body: bodyData,
 			});
 
 			if (!response.ok) {
@@ -57,8 +89,36 @@ class BacklogAPI {
 			);
 		}
 	}
-	async searchIssues(params: IssuesParams): Promise<string> {
-		const data = await this.request<BacklogIssue[]>("/issues", params);
+
+	async getProjects(params: ProjectsParams): Promise<string> {
+		const data = await this.request<BacklogProject[]>(
+			"/projects",
+			params,
+			"GET",
+			{
+				Accept: "application/json",
+			},
+		);
+
+		return JSON.stringify(data, null, 2);
+	}
+
+	async getProject(params: ProjectParams): Promise<string> {
+		const data = await this.request<BacklogProject>(
+			`/projects/${params.projectIdOrKey}`,
+			{},
+			"GET",
+			{
+				Accept: "application/json",
+			},
+		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async getIssues(params: IssuesParams): Promise<string> {
+		const data = await this.request<BacklogIssue[]>("/issues", params, "GET", {
+			Accept: "application/json",
+		});
 
 		return JSON.stringify(data, null, 2);
 	}
@@ -66,10 +126,21 @@ class BacklogAPI {
 	async getIssue(params: IssueParams): Promise<string> {
 		const data = await this.request<BacklogIssue>(
 			`/issues/${params.issueIdOrKey}`,
+			{},
+			"GET",
+			{
+				Accept: "application/json",
+			},
 		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async addIssue(params: AddIssueParams): Promise<string> {
+		const data = await this.request<BacklogIssue>("/issues", params, "POST", {
+			"Content-Type": "application/x-www-form-urlencoded",
+		});
 		return JSON.stringify(data, null, 2);
 	}
 }
 
-// APIインスタンスをエクスポート
 export const backlogAPI = new BacklogAPI(BACKLOG_BASE_URL, BACKLOG_API_KEY);

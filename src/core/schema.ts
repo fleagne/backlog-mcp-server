@@ -104,6 +104,26 @@ const KeywordSchema = z.object({
 	keyword: z.string().optional().describe("Keyword for searching"),
 });
 
+export const ProjectsParamsSchema = z.object({
+	archived: z
+		.boolean()
+		.optional()
+		.describe(
+			"For unspecified parameters, this form returns all projects. For false parameters, it returns unarchived projects. For true parameters, it returns archived projects.",
+		),
+	all: z
+		.boolean()
+		.optional()
+		.default(false)
+		.describe(
+			"Only applies to administrators. If true, it returns all projects. If false, it returns only projects they have joined (set to false by default).",
+		),
+});
+
+export const ProjectParamsSchema = z.object({
+	projectIdOrKey: z.string().describe("Project ID or Project Key"),
+});
+
 export const IssuesParamsSchema = BaseParamsSchema.merge(DateRangeSchema)
 	.merge(EntityIdsSchema)
 	.merge(ConditionSchema)
@@ -114,5 +134,27 @@ export const IssueParamsSchema = z.object({
 	issueIdOrKey: z.string().describe("Issue id or key"),
 });
 
+export const AddIssueParamsSchema = z.object({
+	projectId: z.number().int().describe("Project id"),
+	summary: z.string().describe("Summary"),
+	parentIssueId: z.number().int().optional().describe("Parent issue id"),
+	description: z.string().optional().describe("Description"),
+	startDate: z.string().optional().describe("Start date"),
+	dueDate: z.string().optional().describe("Due date"),
+	estimatedHours: z.number().optional().describe("Estimated hours"),
+	actualHours: z.number().optional().describe("Actual hours"),
+	issueTypeId: z.number().int().describe("Issue type id"),
+	categoryId: z.array(z.number()).optional().describe("Category ids"),
+	versionId: z.array(z.number()).optional().describe("Version ids"),
+	milestoneId: z.array(z.number()).optional().describe("Milestone ids"),
+	priorityId: z.number().int().describe("Priority id"),
+	assigneeId: z.number().int().optional().describe("Assignee id"),
+	notifiedUserId: z.array(z.number()).optional().describe("Notified user ids"),
+	attachmentId: z.array(z.number()).optional().describe("Attachment ids"),
+});
+
+export type ProjectsParams = z.infer<typeof ProjectsParamsSchema>;
+export type ProjectParams = z.infer<typeof ProjectParamsSchema>;
 export type IssuesParams = z.infer<typeof IssuesParamsSchema>;
 export type IssueParams = z.infer<typeof IssueParamsSchema>;
+export type AddIssueParams = z.infer<typeof AddIssueParamsSchema>;

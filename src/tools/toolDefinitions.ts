@@ -1,10 +1,55 @@
 import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
-import { IssueParamsSchema, IssuesParamsSchema } from "../core/schema.js";
+import {
+	AddIssueParamsSchema,
+	IssueParamsSchema,
+	IssuesParamsSchema,
+	ProjectParamsSchema,
+	ProjectsParamsSchema,
+} from "../core/schema.js";
 
 function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
+	const isProjectsParamsSchema = schema === ProjectsParamsSchema;
+	const isProjectParamsSchema = schema === ProjectParamsSchema;
 	const isIssuesParamsSchema = schema === IssuesParamsSchema;
 	const isIssueParamsSchema = schema === IssueParamsSchema;
+	const isAddIssueParamsSchema = schema === AddIssueParamsSchema;
+
+	if (isProjectsParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				archived: {
+					type: "boolean",
+					description:
+						"For unspecified parameters, this form returns all projects. " +
+						"For false parameters, it returns unarchived projects. " +
+						"For true parameters, it returns archived projects.",
+				},
+				all: {
+					type: "boolean",
+					description:
+						"Only applies to administrators. " +
+						"If true, it returns all projects. " +
+						"If false, it returns only projects they have joined (set to false by default).",
+					default: false,
+				},
+			},
+		};
+	}
+
+	if (isProjectParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				projectIdOrKey: {
+					type: "string",
+					description: "Project ID or Project Key",
+				},
+			},
+			required: ["projectIdOrKey"],
+		};
+	}
 
 	if (isIssuesParamsSchema) {
 		return {
@@ -107,6 +152,67 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 				},
 			},
 			required: ["issueIdOrKey"],
+		};
+	}
+
+	if (isAddIssueParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				projectId: {
+					type: "number",
+					description: "Project id",
+				},
+				summary: {
+					type: "string",
+					description: "Summary of the issue",
+				},
+				description: {
+					type: "string",
+					description: "Description of the issue",
+				},
+				issueTypeId: {
+					type: "number",
+					description: "Issue type id",
+				},
+				priorityId: {
+					type: "number",
+					description: "Priority id",
+				},
+				categoryId: {
+					type: "number",
+					description: "Category id",
+				},
+				versionId: {
+					type: "number",
+					description: "Version id",
+				},
+				milestoneId: {
+					type: "number",
+					description: "Milestone id",
+				},
+				assigneeId: {
+					type: "number",
+					description: "Assignee id",
+				},
+				startDate: {
+					type: "string",
+					description: "Start date of the issue (YYYY-MM-DD format)",
+				},
+				dueDate: {
+					type: "string",
+					description: "Due date of the issue (YYYY-MM-DD format)",
+				},
+				estimatedHours: {
+					type: "number",
+					description: "Estimated hours for the issue",
+				},
+				actualHours: {
+					type: "number",
+					description: "Actual hours for the issue",
+				},
+			},
+			required: ["projectId", "summary", "issueTypeId", "priorityId"],
 		};
 	}
 
@@ -219,6 +325,7 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 const createTool = (
 	name: string,
 	description: string,
+	// biome-ignore lint/suspicious/noExplicitAny: Because the interface changes according to the purpose
 	schema: z.ZodType<any>,
 ): Tool => {
 	const inputSchema = convertZodToJsonSchema(schema);
@@ -230,18 +337,44 @@ const createTool = (
 	};
 };
 
+export const PROJECTS_TOOL: Tool = createTool(
+	"backlog_get_projects",
+	"Performs list project get using the Backlog Projects get API. " +
+		"Supports pagination, content filtering. " +
+		"Maximum 20 results per request, with offset for pagination.",
+	ProjectsParamsSchema,
+);
+
+export const PROJECT_TOOL: Tool = createTool(
+	"backlog_get_project",
+	"Performs an project get using the Backlog Project get API.",
+	ProjectParamsSchema,
+);
+
 export const ISSUES_TOOL: Tool = createTool(
-	"backlog_search_issues",
-	"Performs list issue search using the Backlog Issues Search API. " +
+	"backlog_get_issues",
+	"Performs list issue get using the Backlog Issues get API. " +
 		"Supports pagination, content filtering. " +
 		"Maximum 20 results per request, with offset for pagination.",
 	IssuesParamsSchema,
 );
 
 export const ISSUE_TOOL: Tool = createTool(
-	"backlog_search_issue",
-	"Performs an issue search using the Backlog Issue Search API.",
+	"backlog_get_issue",
+	"Performs an issue get using the Backlog Issue get API.",
 	IssueParamsSchema,
 );
 
-export const ALL_TOOLS: Tool[] = [ISSUES_TOOL, ISSUE_TOOL];
+export const ADD_ISSUE_TOOL: Tool = createTool(
+	"backlog_add_issue",
+	"Adds an issue using the Backlog Add Issue API.",
+	AddIssueParamsSchema,
+);
+
+export const ALL_TOOLS: Tool[] = [
+	PROJECTS_TOOL,
+	PROJECT_TOOL,
+	ISSUES_TOOL,
+	ISSUE_TOOL,
+	ADD_ISSUE_TOOL,
+];
