@@ -21,11 +21,18 @@ An MCP server implementation that integrates the Backlog API.
 2. Choose a plan (Free plan available [here](https://registerjp.backlog.com/trial/with-new-account/plan/11))
 3. Generate your API key from the individual settings [help](https://support-ja.backlog.com/hc/ja/articles/360035641754-API%E3%81%AE%E8%A8%AD%E5%AE%9A)
 
+### Environment Variables
+
+This server requires the following environment variables:
+
+- `BACKLOG_API_KEY`: Your Backlog API key
+- `BACKLOG_SPACE_ID`: Your Backlog space ID
+
 ### Usage with Claude Desktop
 
 Add this to your `claude_desktop_config.json`:
 
-### NPX
+#### NPX
 
 ```json
 {
@@ -45,7 +52,7 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
-### Docker
+#### Docker
 
 ```json
 {
@@ -71,13 +78,38 @@ Add this to your `claude_desktop_config.json`:
 }
 ```
 
-## Build
+## Development
 
-Docker build:
+### Installation
+
+```bash
+npm install
+```
+
+### Build
+
+```bash
+npm run build
+```
+
+### Running Tests
+
+T.B.D
+
+### Docker Build
 
 ```bash
 docker build -t mcp/backlog -f Dockerfile .
 ```
+
+## Extending the Server
+
+To add new tools:
+
+1. Define a new Zod schema in `src/core/schema.ts`
+2. Add a new tool definition in `src/tools/toolDefinitions.ts` and include it in `ALL_TOOLS`
+3. Create a new handler in `src/tools/handlers.ts` and register it in `toolHandlers`
+4. Implement business logic in a service in the `src/services/` directory
 
 ## License
 
