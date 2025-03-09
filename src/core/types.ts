@@ -125,6 +125,21 @@ export interface BacklogProject {
 	useDevAttributes: boolean;
 }
 
+interface Tag {
+	id: number;
+	name: string;
+}
+export interface BacklogWiki {
+	id: number;
+	projectId: number;
+	name: string;
+	tags: Tag[];
+	createdUser: BacklogUser;
+	created: string;
+	updatedUser: BacklogUser;
+	updated: string;
+}
+
 export type ToolName =
 	| "backlog_get_projects"
 	| "backlog_get_project"
@@ -132,4 +147,9 @@ export type ToolName =
 	| "backlog_get_issue"
 	| "backlog_add_issue"
 	| "backlog_update_issue"
-	| "backlog_delete_issue";
+	| "backlog_delete_issue"
+	| "backlog_get_wikis"
+	| "backlog_get_wiki"
+	| "backlog_add_wiki"
+	| "backlog_update_wiki"
+	| "backlog_delete_wiki";

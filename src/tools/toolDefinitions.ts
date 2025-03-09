@@ -2,12 +2,17 @@ import type { Tool } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import {
 	AddIssueParamsSchema,
+	AddWikiParamsSchema,
 	DeleteIssueParamsSchema,
+	DeleteWikiParamsSchema,
 	IssueParamsSchema,
 	IssuesParamsSchema,
 	ProjectParamsSchema,
 	ProjectsParamsSchema,
 	UpdateIssueParamsSchema,
+	UpdateWikiParamsSchema,
+	WikiParamsSchema,
+	WikisParamsSchema,
 } from "../core/schema.js";
 
 function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
@@ -18,6 +23,11 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 	const isAddIssueParamsSchema = schema === AddIssueParamsSchema;
 	const isUpdateIssueParamsSchema = schema === AddIssueParamsSchema;
 	const isDeleteIssueParamsSchema = schema === AddIssueParamsSchema;
+	const isWikisParamsSchema = schema === WikisParamsSchema;
+	const isWikiParamsSchema = schema === WikiParamsSchema;
+	const isAddWikiParamsSchema = schema === AddWikiParamsSchema;
+	const isUpdateWikiParamsSchema = schema === UpdateWikiParamsSchema;
+	const isDeleteWikiParamsSchema = schema === DeleteWikiParamsSchema;
 
 	if (isProjectsParamsSchema) {
 		return {
@@ -294,6 +304,103 @@ function convertZodToJsonSchema(schema: z.ZodType<unknown>) {
 		};
 	}
 
+	if (isWikisParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				projectIdOrKey: {
+					type: "string",
+					description: "Project ID or Project Key",
+				},
+				keywords: {
+					type: "string",
+					description: "Keyword for searching",
+				},
+			},
+			required: ["projectIdOrKey"],
+		};
+	}
+
+	if (isWikiParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				wikiId: {
+					type: "number",
+					description: "Wiki page ID",
+				},
+			},
+			required: ["wikiId"],
+		};
+	}
+
+	if (isAddWikiParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				projectId: {
+					type: "number",
+					description: "Project ID",
+				},
+				name: {
+					type: "string",
+					description: "Page Name",
+				},
+				content: {
+					type: "string",
+					description: "Content",
+				},
+				mailNotify: {
+					type: "boolean",
+					description: "True make to notify by Email",
+				},
+			},
+			required: ["projectId", "name", "content"],
+		};
+	}
+
+	if (isUpdateWikiParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				wikiId: {
+					type: "number",
+					description: "Wiki page ID",
+				},
+				name: {
+					type: "string",
+					description: "Page Name",
+				},
+				content: {
+					type: "string",
+					description: "Content",
+				},
+				mailNotify: {
+					type: "boolean",
+					description: "True make to notify by Email",
+				},
+			},
+			required: ["wikiId"],
+		};
+	}
+
+	if (isDeleteWikiParamsSchema) {
+		return {
+			type: "object" as const,
+			properties: {
+				wikiId: {
+					type: "number",
+					description: "Wiki page ID",
+				},
+				mailNotify: {
+					type: "boolean",
+					description: "True make to notify by Email",
+				},
+			},
+			required: ["wikiId"],
+		};
+	}
+
 	const properties: Record<string, unknown> = {};
 	const required: string[] = [];
 
@@ -461,6 +568,36 @@ export const DELETE_ISSUE_TOOL: Tool = createTool(
 	DeleteIssueParamsSchema,
 );
 
+export const WIKIS_TOOL: Tool = createTool(
+	"backlog_get_wikis",
+	"Performs list wikis get using the Backlog Wiki API",
+	WikisParamsSchema,
+);
+
+export const WIKI_TOOL: Tool = createTool(
+	"backlog_get_wiki",
+	"Performs an wiki get using the Backlog Wiki API.",
+	WikiParamsSchema,
+);
+
+export const ADD_WIKI_TOOL: Tool = createTool(
+	"backlog_add_wiki",
+	"Add an wiki using the Backlog Wiki API.",
+	AddWikiParamsSchema,
+);
+
+export const UPDATE_WIKI_TOOL: Tool = createTool(
+	"backlog_update_wiki",
+	"Update an wiki using the Backlog Wiki API.",
+	UpdateWikiParamsSchema,
+);
+
+export const DELETE_WIKI_TOOL: Tool = createTool(
+	"backlog_delete_wiki",
+	"Delete an wiki using the Backlog Wiki API.",
+	DeleteWikiParamsSchema,
+);
+
 export const ALL_TOOLS: Tool[] = [
 	PROJECTS_TOOL,
 	PROJECT_TOOL,
@@ -469,4 +606,9 @@ export const ALL_TOOLS: Tool[] = [
 	ADD_ISSUE_TOOL,
 	UPDATE_ISSUE_TOOL,
 	DELETE_ISSUE_TOOL,
+	WIKIS_TOOL,
+	WIKI_TOOL,
+	ADD_WIKI_TOOL,
+	UPDATE_WIKI_TOOL,
+	DELETE_WIKI_TOOL,
 ];

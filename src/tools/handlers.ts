@@ -1,15 +1,24 @@
 import {
 	AddIssueParamsSchema,
+	AddWikiParamsSchema,
 	DeleteIssueParamsSchema,
+	DeleteWikiParamsSchema,
 	IssueParamsSchema,
 	IssuesParamsSchema,
 	ProjectParamsSchema,
 	ProjectsParamsSchema,
 	UpdateIssueParamsSchema,
+	UpdateWikiParamsSchema,
+	WikiParamsSchema,
+	WikisParamsSchema,
 } from "../core/schema.js";
 import type { ToolName } from "../core/types.js";
 import { ValidationError, formatError } from "../error/errors.js";
-import { issueService, projectService } from "../services/index.js";
+import {
+	issueService,
+	projectService,
+	wikiService,
+} from "../services/index.js";
 
 interface ToolResponse {
 	content: {
@@ -260,6 +269,176 @@ const handleDeleteIssue: ToolHandler = async (args) => {
 	}
 };
 
+const handleGetWikis: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = WikisParamsSchema.parse(args);
+
+			const text = await wikiService.getWikis(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleGetWiki: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = WikiParamsSchema.parse(args);
+
+			const text = await wikiService.getWiki(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Wiki details for ${validatedParams.wikiId}:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleAddWiki: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = AddWikiParamsSchema.parse(args);
+
+			const text = await wikiService.addWiki(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleUpdateWiki: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = UpdateWikiParamsSchema.parse(args);
+
+			const text = await wikiService.updateWiki(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
+const handleDeleteWiki: ToolHandler = async (args) => {
+	try {
+		try {
+			const validatedParams = DeleteWikiParamsSchema.parse(args);
+
+			const text = await wikiService.deleteWiki(validatedParams);
+
+			return {
+				content: [
+					{
+						type: "text",
+						text: `Results for your query:\n${text}`,
+					},
+				],
+				isError: false,
+			};
+		} catch (validationError) {
+			throw new ValidationError(
+				`Invalid parameters: ${validationError instanceof Error ? validationError.message : String(validationError)}`,
+			);
+		}
+	} catch (error) {
+		return {
+			content: [
+				{
+					type: "text",
+					text: `Error: ${formatError(error)}`,
+				},
+			],
+			isError: true,
+		};
+	}
+};
+
 export const toolHandlers: Record<ToolName, ToolHandler> = {
 	backlog_get_projects: handleGetProjects,
 	backlog_get_project: handleGetProject,
@@ -268,4 +447,9 @@ export const toolHandlers: Record<ToolName, ToolHandler> = {
 	backlog_add_issue: handleAddIssue,
 	backlog_update_issue: handleUpdateIssue,
 	backlog_delete_issue: handleDeleteIssue,
+	backlog_get_wikis: handleGetWikis,
+	backlog_get_wiki: handleGetWiki,
+	backlog_add_wiki: handleAddWiki,
+	backlog_update_wiki: handleUpdateWiki,
+	backlog_delete_wiki: handleDeleteWiki,
 };

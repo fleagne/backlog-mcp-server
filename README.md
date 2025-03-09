@@ -19,6 +19,23 @@ An MCP server implementation that integrates the Backlog API.
   - Execute issue gets with issue id or key
 - **backlog_add_issue**
   - Execute issue add with issue data
+- **backlog_update_issue**
+  - Execute issue update with issue data
+- **backlog_delete_issue**
+  - Execute issue delete with issue id or key
+
+### Wiki API
+
+- **backlog_get_wikis**
+  - Execute wikis get with keyword
+- **backlog_get_wiki**
+  - Execute wiki gets with wiki id or key
+- **backlog_add_wiki**
+  - Execute wiki add with wiki data
+- **backlog_update_wiki**
+  - Execute wiki update with wiki data
+- **backlog_delete_wiki**
+  - Execute wiki delete with wiki id or key
 
 ## Configuration
 

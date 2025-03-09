@@ -1,14 +1,23 @@
 import { BACKLOG_API_KEY, BACKLOG_BASE_URL } from "../config/config.js";
 import type {
 	AddIssueParams,
+	AddWikiParams,
 	DeleteIssueParams,
+	DeleteWikiParams,
 	IssueParams,
 	IssuesParams,
 	ProjectParams,
 	ProjectsParams,
 	UpdateIssueParams,
+	UpdateWikiParams,
+	WikiParams,
+	WikisParams,
 } from "../core/schema.js";
-import type { BacklogIssue, BacklogProject } from "../core/types.js";
+import type {
+	BacklogIssue,
+	BacklogProject,
+	BacklogWiki,
+} from "../core/types.js";
 import { APIError } from "../error/errors.js";
 
 class BacklogAPI {
@@ -157,6 +166,57 @@ class BacklogAPI {
 	async deleteIssue(params: DeleteIssueParams): Promise<string> {
 		const data = await this.request<BacklogIssue>(
 			`/issues/${params.issueIdOrKey}`,
+			{},
+			"DELETE",
+			{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async getWikis(params: WikisParams): Promise<string> {
+		const data = await this.request<BacklogWiki[]>("/wikis", params, "GET", {
+			Accept: "application/json",
+		});
+
+		return JSON.stringify(data, null, 2);
+	}
+
+	async getWiki(params: WikiParams): Promise<string> {
+		const data = await this.request<BacklogWiki>(
+			`/wikis/${params.wikiId}`,
+			{},
+			"GET",
+			{
+				Accept: "application/json",
+			},
+		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async addWiki(params: AddWikiParams): Promise<string> {
+		const data = await this.request<BacklogWiki>("/wikis", params, "POST", {
+			"Content-Type": "application/x-www-form-urlencoded",
+		});
+		return JSON.stringify(data, null, 2);
+	}
+
+	async updateWiki(params: UpdateWikiParams): Promise<string> {
+		const data = await this.request<BacklogWiki>(
+			`/wikis/${params.wikiId}`,
+			{ ...params, wikiId: undefined },
+			"PATCH",
+			{
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		);
+		return JSON.stringify(data, null, 2);
+	}
+
+	async deleteWiki(params: DeleteWikiParams): Promise<string> {
+		const data = await this.request<BacklogWiki>(
+			`/wikis/${params.wikiId}`,
 			{},
 			"DELETE",
 			{

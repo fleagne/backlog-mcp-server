@@ -178,6 +178,34 @@ export const DeleteIssueParamsSchema = z.object({
 	issueIdOrKey: z.string().describe("Issue ID or Issue Key"),
 });
 
+export const WikisParamsSchema = z.object({
+	projectIdOrKey: z.string().describe("Project ID or Project Key"),
+	keyword: z.string().optional().describe("Keyword for searching"),
+});
+
+export const WikiParamsSchema = z.object({
+	wikiId: z.number().int().describe("Wiki page ID"),
+});
+
+export const AddWikiParamsSchema = z.object({
+	projectId: z.number().int().describe("Project ID"),
+	name: z.string().describe("Page Name"),
+	content: z.string().describe("Content"),
+	mailNotify: z.boolean().optional().describe("True make to notify by Email"),
+});
+
+export const UpdateWikiParamsSchema = z.object({
+	wikiId: z.number().int().describe("Wiki page ID"),
+	name: z.string().optional().describe("Page Name"),
+	content: z.string().optional().describe("Content"),
+	mailNotify: z.boolean().optional().describe("True make to notify by Email"),
+});
+
+export const DeleteWikiParamsSchema = z.object({
+	wikiId: z.number().int().describe("Wiki page ID"),
+	mailNotify: z.boolean().optional().describe("True make to notify by Email"),
+});
+
 export type ProjectsParams = z.infer<typeof ProjectsParamsSchema>;
 export type ProjectParams = z.infer<typeof ProjectParamsSchema>;
 export type IssuesParams = z.infer<typeof IssuesParamsSchema>;
@@ -185,3 +213,8 @@ export type IssueParams = z.infer<typeof IssueParamsSchema>;
 export type AddIssueParams = z.infer<typeof AddIssueParamsSchema>;
 export type UpdateIssueParams = z.infer<typeof UpdateIssueParamsSchema>;
 export type DeleteIssueParams = z.infer<typeof DeleteIssueParamsSchema>;
+export type WikisParams = z.infer<typeof WikisParamsSchema>;
+export type WikiParams = z.infer<typeof WikiParamsSchema>;
+export type AddWikiParams = z.infer<typeof AddWikiParamsSchema>;
+export type UpdateWikiParams = z.infer<typeof UpdateWikiParamsSchema>;
+export type DeleteWikiParams = z.infer<typeof DeleteWikiParamsSchema>;
