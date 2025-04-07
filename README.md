@@ -49,8 +49,11 @@ An MCP server implementation that integrates the Backlog API.
 
 This server requires the following environment variables:
 
-- `BACKLOG_API_KEY`: Your Backlog API key
-- `BACKLOG_SPACE_ID`: Your Backlog space ID
+- Required:
+  - `BACKLOG_API_KEY`: Your Backlog API key
+  - `BACKLOG_SPACE_ID`: Your Backlog space ID
+- Optional:
+  - `BACKLOG_BASE_URL`: Your Backlog base URL (default: `https://{your-space-id}.backlog.com/api/v2`)
 
 ### Usage with Claude Desktop
 
