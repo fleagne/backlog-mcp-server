@@ -1,3 +1,10 @@
+> [!CAUTION]
+> Official Backlog MCP server launched!
+>
+> This repository will be changed visible.
+>
+> https://nulab.com/ja/blog/backlog/released-backlog-mcp-server/
+
 # Backlog MCP Server
 
 An MCP server implementation that integrates the Backlog API.
