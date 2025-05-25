@@ -1,0 +1,36 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - backlogApiKey
+      - backlogSpaceId
+    properties:
+      backlogApiKey:
+        type: string
+        description: Your Backlog API Key
+      backlogSpaceId:
+        type: string
+        description: Your Backlog Space ID
+      backlogBaseUrl:
+        type: string
+        description: Optional base URL for Backlog API
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'node',
+      args: ['build/index.js'],
+      env: {
+        BACKLOG_API_KEY: config.backlogApiKey,
+        BACKLOG_SPACE_ID: config.backlogSpaceId,
+        ...(config.backlogBaseUrl ? { BACKLOG_BASE_URL: config.backlogBaseUrl } : {})
+      }
+    })
+  exampleConfig:
+    backlogApiKey: YOUR_API_KEY_HERE
+    backlogSpaceId: YOUR_SPACE_ID_HERE
+    backlogBaseUrl: https://your-space-id.backlog.com/api/v2

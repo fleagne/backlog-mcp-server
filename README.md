@@ -6,6 +6,7 @@
 > https://nulab.com/ja/blog/backlog/released-backlog-mcp-server/
 
 # Backlog MCP Server
+[![smithery badge](https://smithery.ai/badge/@fleagne/backlog-mcp-server)](https://smithery.ai/server/@fleagne/backlog-mcp-server)
 
 An MCP server implementation that integrates the Backlog API.
 
@@ -115,6 +116,16 @@ Add this to your `claude_desktop_config.json`:
 ## Development
 
 ### Installation
+
+#### Installing via Smithery
+
+To install Backlog API Integration Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@fleagne/backlog-mcp-server):
+
+```bash
+npx -y @smithery/cli install @fleagne/backlog-mcp-server --client claude
+```
+
+#### Manual Installation
 
 ```bash
 npm install
